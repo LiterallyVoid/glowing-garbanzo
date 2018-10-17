@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>New Webpage</title>
+        <style>
+            html, body {
+                background-color: #EEE;
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            textarea {
+                height: 100px;
+            }
+            textarea#in {
+                display: box;
+                flex-grow: 1;
+            }
+            .container > div {
+                flex-basis: 10px;
+            }
+            input, button {
+                margin: 0 10px;
+                height: 26px;
+                border-radius: 2px;
+                border: none;
+                padding: 0 5px;
+            }
+            button {
+                margin: 0;
+                margin-left: 10px;
+                padding: 0 20px;
+                background-color: #07F;
+                color: #FFF;
+                font-weight: bold;
+            }
+            #container {
+                display: flex;
+                margin: 20px 20px;
+            }
+            #out-cont {
+                display: flex;
+                margin: 20px;
+            }
+            #output {
+                display: box;
+                flex-grow: 1;
+                flex-basis: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+        <textarea id="in" ></textarea>
+        <div>
+            <button onclick="setOutput(encode(document.querySelector('#in').value));">Encode</button><br/><br/>
+            <button onclick="setOutput(decode(document.querySelector('#in').value));">Decode</button>
+        </div>
+        </div>
+        <div id="out-cont"><textarea id="output"></textarea></div>
+        <script>
+            var chars = "\uFEFF\u180E\u200B\u2063\u200C\u200D\u200E\u202A\u202D\u2062\uFFFA\u2064\uFFFB\u206F\u2061\uFFFC";
+            console.log({e: chars});
+            function encode(txt) {
+                var data = "";
+                for(var i = 0; i < txt.length; i++) {
+                    var code = txt.charCodeAt(i);
+                    data += chars[(code >> 4)];
+                    data += chars[code & 0xF];
+                }
+                return "[" + data + "\u202D]";
+            }
+            function decode(txt) {
+                var d = txt.substr(1, txt.length - 3);
+                var o = "";
+                for(var i = 0; i < d.length; i += 2) {
+                    var c1 = chars.indexOf(d.charAt(i));
+                    var c2 = chars.indexOf(d.charAt(i + 1));
+                    o += String.fromCharCode((c1 << 4) | c2);
+                }
+                return o;
+            }
+            function setOutput(txt) {
+                document.getElementById('output').value = txt;
+            }
+        </script>
+    </body>
+</html>
